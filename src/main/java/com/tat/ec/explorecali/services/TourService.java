@@ -1,6 +1,6 @@
 package com.tat.ec.explorecali.services;
 
-import java.util.Optional;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,11 +25,11 @@ public class TourService {
 	}
 	
 	public  Tour createTour(String title, String description, String blurb, Integer price, String duration,
-			String bullets, String keywords, String tourPackageCode, Difficulty difficulty, Region region){
+			String bullets, String keywords, String tourPackageName, Difficulty difficulty, Region region){
 		
-		Optional<TourPackage>  tourPackage =tourPackageRepository.findById(tourPackageCode);
+		TourPackage  tourPackage =tourPackageRepository.findByName(tourPackageName);
 		if(tourPackage == null) {
-			throw new RuntimeException("Tour Package doesn't exists: "+tourPackageCode);
+			throw new RuntimeException("Tour Package doesn't exists: "+tourPackageName);
 		}else{
 			Tour tour = new Tour(title, description, blurb, price, duration,
 					bullets, keywords,tourPackage, difficulty, region);

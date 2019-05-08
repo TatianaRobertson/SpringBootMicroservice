@@ -1,7 +1,11 @@
 package com.tat.ec.explorecali.web;
 
+import java.util.AbstractMap;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.OptionalDouble;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -54,6 +58,23 @@ public class TourRatingController {
 	
 	}
 	
+	@RequestMapping(method=RequestMethod.GET)
+	public List<RatingDto> getAllRatingsForTour(@PathVariable(value="tourId") 
+    											int tourId){
+		Tour tour = verifyTour(tourId);
+		return tourRatingRepository.findByPkTourId(tourId).stream()
+				.map(tourRating -> toDto(tourRating)).collect(Collectors.toList());
+				
+	}
+
+	@RequestMapping(method=RequestMethod.GET, path="/average")
+	public AbstractMap.SimpleEntry<String, Double> getAverage(@PathVariable(value="tourId") 
+    											int tourId){
+		Tour tour = verifyTour(tourId);
+		List<TourRating> tourRatings= tourRatingRepository.findByPkTourId(tourId);
+		OptionalDouble average = tourRatings.stream().mapToInt(TourRating::getScore).average();
+		return new AbstractMap.SimpleEntry<String, Double>("Average",average.isPresent() ? average.getAsDouble() : null);
+	}
 	private TourRating verifyTourRating(int tourId, int customerId) throws NoSuchElementException{
 		TourRating rating = tourRatingRepository.findByPkTourIdAndPkCustomerId(tourId, customerId);
 		if(rating == null) {

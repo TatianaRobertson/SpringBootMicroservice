@@ -3,7 +3,6 @@ package com.tat.ec.explorecali.web;
 import java.util.AbstractMap;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.stream.Collectors;
 
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -128,12 +126,8 @@ public class TourRatingController {
 
 	
 	private Tour verifyTour(int tourId) throws NoSuchElementException{
-		Optional<Tour> tour = tourRepository.findById(tourId);
-		if(tour.isPresent()){
-			return tour.get(); 
-		}else{
-			throw new NoSuchElementException("Tour does not exist " + tourId); 
-		}
+		Tour tour = tourRepository.findById(tourId).orElseThrow( () ->   new NoSuchElementException("Tour does not exist " + tourId) );
+		return tour;		
 	}
 	
 	@ResponseStatus(HttpStatus.NOT_FOUND)

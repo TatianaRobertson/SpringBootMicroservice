@@ -20,7 +20,9 @@ public class TourPackageService {
     public TourPackage createTourPackage(String code, String name ){
     	TourPackage tourPackage =new TourPackage(code, name);
     	if(!tourPackageRepository.existsById(code)){
-    		tourPackageRepository.save(tourPackage);
+    		return tourPackageRepository.save(tourPackage);
+    	}else{
+    		new RuntimeException("Tour Package doesn't exists: "+code);
     	}
     	return null;
     } 

@@ -27,15 +27,10 @@ public class TourService {
 	public  Tour createTour(String title, String description, String blurb, Integer price, String duration,
 			String bullets, String keywords, String tourPackageName, Difficulty difficulty, Region region){
 		
-		TourPackage  tourPackage =tourPackageRepository.findByName(tourPackageName);
-		if(tourPackage == null) {
-			throw new RuntimeException("Tour Package doesn't exists: "+tourPackageName);
-		}else{
-			Tour tour = new Tour(title, description, blurb, price, duration,
+		TourPackage  tourPackage =tourPackageRepository.findByName(tourPackageName).orElseThrow(() -> new RuntimeException("Tour Package doesn't exists: "+tourPackageName));
+		Tour tour = new Tour(title, description, blurb, price, duration,
 					bullets, keywords,tourPackage, difficulty, region);
-			
-			return tourRepository.save(tour);
-		}
+		return tourRepository.save(tour);
 	}
 	
 	public Iterable<Tour> lookup() {
